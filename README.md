@@ -51,18 +51,9 @@ Dashboard interaktif dibangun menggunakan **Streamlit** dan **Plotly Express** d
 
 ---
 
-## 🛠️ Cara Menjalankan Aplikasi di Lokal
+### 🛠️ Cara Menjalankan Aplikasi di Lokal
 
-1. **Clone Repository**:
+1. **Clone Repository:**
    ```bash
-   git clone [https://github.com/](https://github.com/)<USERNAME_KAMU>/monitoring-bencana.git cd monitoring-bencana
-
-## 🔗 Validitas Data & Referensi Kode
-
-- **Sumber Data Primer**: [Galura Data Jabar - Jumlah Kejadian Bencana Berdasarkan Jenis Bencana di Jawa Barat](https://galura.jabarprov.go.id/dataset/jumlah-kejadian-bencana-berdasarkan-jenis-bencana-di-jawa-barat)
-- **Skrip Replikasi Database**: `seed.py`, `schema_postgres.sql`, dan `schema_mysql.sql`
-- **Referensi Kode & Framework**:
-  - [Streamlit Documentation](https://docs.streamlit.io/)
-  - [Plotly Express Open Source Graphing Library](https://plotly.com/python/plotly-express/)
-  - [Neon PostgreSQL Documentation](https://neon.tech/docs/introduction)
-  - [Aiven for MySQL Documentation](https://docs.aiven.io/docs/products/mysql)
+   git clone [https://github.com/restirohyani30/monitoring-bencana.git](https://github.com/restirohyani30/monitoring-bencana.git)
+   cd monitoring-bencana
