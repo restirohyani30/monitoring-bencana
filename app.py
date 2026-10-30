@@ -15,30 +15,58 @@ st.set_page_config(
 
 load_dotenv()
 
+# Fungsi Pembantu untuk Membaca Secret (Cloud vs Local)
+def get_secret(key, section=None, default=None):
+    """Membaca kredensial dari st.secrets (Streamlit Cloud) atau os.getenv (.env lokal)"""
+    try:
+        # 1. Cek dari st.secrets section (misal st.secrets["mysql"]["port"])
+        if section and section in st.secrets and key.lower() in st.secrets[section]:
+            return st.secrets[section][key.lower()]
+        # 2. Cek dari st.secrets flat (misal st.secrets["MYSQL_PORT"])
+        if key in st.secrets:
+            return st.secrets[key]
+    except Exception:
+        pass
+    # 3. Cek dari environment variable (.env lokal)
+    return os.getenv(key, default)
+
 # Fungsi Multi-DBMS Data Pipeline (Federation via Pandas)
 @st.cache_data(ttl=300)
 def load_and_federate_data():
     try:
-        # 1. Kueri data transaksi dari PostgreSQL (Neon) - Direct Parameters
+        # Ambil kredensial PostgreSQL
+        pg_host = get_secret("PG_HOST", "postgres", "ep-round-poetry-b5p3t6cu.c-7.us-east-2.aws.neon.tech")
+        pg_port = int(get_secret("PG_PORT", "postgres", 5432))
+        pg_db = get_secret("PG_DATABASE", "postgres", "neondb")
+        pg_user = get_secret("PG_USER", "postgres", "neondb_owner")
+        pg_pass = get_secret("PG_PASSWORD", "postgres", "npg_aZbBkpXtS20L")
+
+        # 1. Kueri data transaksi dari PostgreSQL (Neon)
         conn_pg = psycopg2.connect(
-            host="ep-round-poetry-b5p3t6cu.c-7.us-east-2.aws.neon.tech",
-            port=5432,
-            database="neondb",
-            user="neondb_owner",
-            password="npg_aZbBkpXtS20L",
+            host=pg_host,
+            port=pg_port,
+            database=pg_db,
+            user=pg_user,
+            password=pg_pass,
             sslmode="require"
         )
         df_kejadian = pd.read_sql("SELECT * FROM kejadian_bencana", conn_pg)
         conn_pg.close()
 
+        # Ambil kredensial MySQL
+        mysql_host = get_secret("MYSQL_HOST", "mysql", "mysql-2de86176-bencana-jabar.c.aivencloud.com")
+        mysql_port = int(get_secret("MYSQL_PORT", "mysql", 11759))
+        mysql_db = get_secret("MYSQL_DATABASE", "mysql", "defaultdb")
+        mysql_user = get_secret("MYSQL_USER", "mysql", "avnadmin")
+        mysql_pass = get_secret("MYSQL_PASSWORD", "mysql", "AVNS_LD-qoYbeW_ODflwP84I")
+
         # 2. Kueri data master wilayah dari MySQL (Aiven)
         conn_mysql = pymysql.connect(
-            host=os.getenv("MYSQL_HOST"),
-            port=int(os.getenv("MYSQL_PORT")),
-            user=os.getenv("MYSQL_USER"),
-            password=os.getenv("MYSQL_PASSWORD"),
-            database=os.getenv("MYSQL_DATABASE"),
-            ssl={'ca': os.getenv("MYSQL_SSL_CA")}
+            host=mysql_host,
+            port=mysql_port,
+            user=mysql_user,
+            password=mysql_pass,
+            database=mysql_db
         )
         df_wilayah = pd.read_sql("SELECT * FROM master_wilayah", conn_mysql)
         conn_mysql.close()
