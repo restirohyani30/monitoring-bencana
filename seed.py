@@ -14,13 +14,15 @@ df = pd.read_csv(csv_file)
 
 # 2. Upload Data Master Wilayah ke MySQL (Aiven)
 print("⏳ Mengirim master_wilayah ke MySQL (Aiven)...")
+mysql_ssl = {'ca': os.getenv("MYSQL_SSL_CA")} if os.getenv("MYSQL_SSL_CA") else None
+
 conn_mysql = pymysql.connect(
     host=os.getenv("MYSQL_HOST"),
-    port=int(os.getenv("MYSQL_PORT")),
+    port=int(os.getenv("MYSQL_PORT", 3306)),
     user=os.getenv("MYSQL_USER"),
     password=os.getenv("MYSQL_PASSWORD"),
     database=os.getenv("MYSQL_DATABASE"),
-    ssl={'ca': os.getenv("MYSQL_SSL_CA")}
+    ssl=mysql_ssl
 )
 cursor_mysql = conn_mysql.cursor()
 
@@ -47,13 +49,13 @@ print("✅ Data Master Wilayah berhasil disimpan di MySQL!")
 # 3. Upload Data Kejadian ke PostgreSQL (Neon) - Optimasi Bulk Insert
 print("⏳ Mengirim kejadian_bencana ke PostgreSQL (Neon)...")
 conn_pg = psycopg2.connect(
-    host="ep-round-poetry-b5p3t6cu.c-7.us-east-2.aws.neon.tech",
-    port=5432,
-    database="neondb",
-    user="neondb_owner",
-    password="npg_aZbBkpXtS20L",
+    host=os.getenv("PG_HOST"),
+    port=int(os.getenv("PG_PORT", 5432)),
+    database=os.getenv("PG_DATABASE"),
+    user=os.getenv("PG_USER"),
+    password=os.getenv("PG_PASSWORD"),
     sslmode="require",
-    connect_timeout=30  # Mencegah hang jika server lambat merespons
+    connect_timeout=30
 )
 cursor_pg = conn_pg.cursor()
 
