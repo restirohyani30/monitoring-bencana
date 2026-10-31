@@ -16,7 +16,7 @@ st.set_page_config(
 load_dotenv()
 
 # Fungsi Pembantu untuk Membaca Secret (Cloud vs Local)
-def get_secret(key, section=None, default=None):
+def get_secret(key, section=None, default=""):
     """Membaca kredensial dari st.secrets (Streamlit Cloud) atau os.getenv (.env lokal)"""
     try:
         # 1. Cek dari st.secrets section (misal st.secrets["mysql"]["port"])
@@ -35,11 +35,11 @@ def get_secret(key, section=None, default=None):
 def load_and_federate_data():
     try:
         # Ambil kredensial PostgreSQL
-        pg_host = get_secret("PG_HOST", "postgres", "ep-round-poetry-b5p3t6cu.c-7.us-east-2.aws.neon.tech")
+        pg_host = get_secret("PG_HOST", "postgres")
         pg_port = int(get_secret("PG_PORT", "postgres", 5432))
-        pg_db = get_secret("PG_DATABASE", "postgres", "neondb")
-        pg_user = get_secret("PG_USER", "postgres", "neondb_owner")
-        pg_pass = get_secret("PG_PASSWORD", "postgres", "npg_aZbBkpXtS20L")
+        pg_db = get_secret("PG_DATABASE", "postgres")
+        pg_user = get_secret("PG_USER", "postgres")
+        pg_pass = get_secret("PG_PASSWORD", "postgres")
 
         # 1. Kueri data transaksi dari PostgreSQL (Neon)
         conn_pg = psycopg2.connect(
@@ -54,11 +54,11 @@ def load_and_federate_data():
         conn_pg.close()
 
         # Ambil kredensial MySQL
-        mysql_host = get_secret("MYSQL_HOST", "mysql", "mysql-2de86176-bencana-jabar.c.aivencloud.com")
-        mysql_port = int(get_secret("MYSQL_PORT", "mysql", 11759))
-        mysql_db = get_secret("MYSQL_DATABASE", "mysql", "defaultdb")
-        mysql_user = get_secret("MYSQL_USER", "mysql", "avnadmin")
-        mysql_pass = get_secret("MYSQL_PASSWORD", "mysql", "AVNS_LD-qoYbeW_ODflwP84I")
+        mysql_host = get_secret("MYSQL_HOST", "mysql")
+        mysql_port = int(get_secret("MYSQL_PORT", "mysql", 3306))
+        mysql_db = get_secret("MYSQL_DATABASE", "mysql")
+        mysql_user = get_secret("MYSQL_USER", "mysql")
+        mysql_pass = get_secret("MYSQL_PASSWORD", "mysql")
 
         # 2. Kueri data master wilayah dari MySQL (Aiven)
         conn_mysql = pymysql.connect(
