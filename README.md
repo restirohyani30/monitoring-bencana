@@ -58,7 +58,6 @@ Dashboard interaktif dibangun menggunakan **Streamlit** dan **Plotly Express** d
    git clone [https://github.com/restirohyani30/monitoring-bencana.git](https://github.com/restirohyani30/monitoring-bencana.git)
    cd monitoring-bencana
 
-   ---
 
 ### 🔗 Validitas Data & Referensi Kode
 
