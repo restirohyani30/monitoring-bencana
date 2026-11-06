@@ -107,7 +107,7 @@ if not df.empty:
     tahun_list = ["Semua Tahun"] + sorted(list(df['tahun'].unique()))
     selected_tahun = st.sidebar.selectbox("Pilih Tahun:", tahun_list)
 
-    # Filter Kabupaten/Kota (diambil dari hasil gabungan data master)
+    # Filter Kabupaten/Kota
     kab_list = ["Semua Kabupaten/Kota"] + sorted(list(df['nama_kabupaten_kota'].unique()))
     selected_kab = st.sidebar.selectbox("Pilih Wilayah:", kab_list)
 
